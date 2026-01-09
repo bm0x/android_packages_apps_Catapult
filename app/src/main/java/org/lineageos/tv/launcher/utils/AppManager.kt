@@ -14,8 +14,6 @@ import androidx.preference.PreferenceManager
 import org.lineageos.tv.launcher.ext.favoriteApps
 import org.lineageos.tv.launcher.model.LeanbackAppInfo
 
-import com.android.settingslib.Utils as SettingsLibUtils
-
 object AppManager {
     fun updateFavoriteApps(context: Context, installedApps: List<LeanbackAppInfo>) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -65,22 +63,7 @@ object AppManager {
         // Only check if it's a system app
         val isSystemApp = (app.flags and FLAG_SYSTEM) != 0
         
-        return try {
-            !isSystemApp && !SettingsLibUtils.isEssentialPackage(
-                context.resources,
-                context.packageManager,
-                app.packageName
-            )
-        } catch (e: NoClassDefFoundError) {
-            // SettingsLibUtils not available - only check if it's a system app
-            !isSystemApp
-        } catch (e: NoSuchMethodError) {
-            // Method not available - only check if it's a system app
-            !isSystemApp
-        } catch (e: Exception) {
-            // Any other error - safe default behavior
-            !isSystemApp
-        }
+        return !isSystemApp
     }
 
     fun isSystemApp(context: Context): Boolean {
