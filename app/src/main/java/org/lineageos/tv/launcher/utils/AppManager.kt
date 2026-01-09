@@ -61,8 +61,8 @@ object AppManager {
     }
 
     fun uninstallable(app: ApplicationInfo, context: Context): Boolean {
-        // Verificación simple para AndroidTV genérico
-        // Solo verificamos si es app del sistema
+        // Simple verification for generic AndroidTV
+        // Only check if it's a system app
         val isSystemApp = (app.flags and FLAG_SYSTEM) != 0
         
         return try {
@@ -72,13 +72,13 @@ object AppManager {
                 app.packageName
             )
         } catch (e: NoClassDefFoundError) {
-            // SettingsLibUtils no disponible - solo verificamos si es app del sistema
+            // SettingsLibUtils not available - only check if it's a system app
             !isSystemApp
         } catch (e: NoSuchMethodError) {
-            // Método no disponible - solo verificamos si es app del sistema
+            // Method not available - only check if it's a system app
             !isSystemApp
         } catch (e: Exception) {
-            // Cualquier otro error - comportamiento seguro por defecto
+            // Any other error - safe default behavior
             !isSystemApp
         }
     }
