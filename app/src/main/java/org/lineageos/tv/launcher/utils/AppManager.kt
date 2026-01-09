@@ -14,8 +14,6 @@ import androidx.preference.PreferenceManager
 import org.lineageos.tv.launcher.ext.favoriteApps
 import org.lineageos.tv.launcher.model.LeanbackAppInfo
 
-import com.android.settingslib.Utils as SettingsLibUtils
-
 object AppManager {
     fun updateFavoriteApps(context: Context, installedApps: List<LeanbackAppInfo>) {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -61,11 +59,11 @@ object AppManager {
     }
 
     fun uninstallable(app: ApplicationInfo, context: Context): Boolean {
-        return !isSystemApp(context) && !app.isSignedWithPlatformKey && !SettingsLibUtils.isEssentialPackage(
-            context.resources,
-            context.packageManager,
-            app.packageName
-        )
+        // Simple verification for generic AndroidTV
+        // Only check if it's a system app
+        val isSystemApp = (app.flags and FLAG_SYSTEM) != 0
+        
+        return !isSystemApp
     }
 
     fun isSystemApp(context: Context): Boolean {
