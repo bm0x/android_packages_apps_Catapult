@@ -28,7 +28,7 @@ jobs:
         ./gradlew app:generateBp
         if [[ ! -z $(git status -s) ]]; then
           git status
-          exit -1
+          exit 1
         fi
 
     - name: Build Debug APK
@@ -41,7 +41,7 @@ jobs:
     - name: Find APK files
       id: find_apk
       run: |
-        if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+        if [[ ${{ github.ref }} == refs/tags/* ]]; then
           APK_PATH=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
           APK_NAME="Catapult-release-${{ github.ref_name }}.apk"
         else
@@ -66,8 +66,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref_name != 'main' && github.ref_name || format('build-{0}', github.run_number) }}
-        release_name: ${{ github.ref_name != 'main' && github.ref_name || format('Build {0} ({1})', github.run_number, github.sha) }}
+        tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('build-{0}', github.run_number) }}
+        release_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('Build {0} ({1})', github.run_number, github.sha) }}
         body: |
           Automated release from commit ${{ github.sha }}
           
