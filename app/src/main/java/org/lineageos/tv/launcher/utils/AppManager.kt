@@ -61,11 +61,26 @@ object AppManager {
     }
 
     fun uninstallable(app: ApplicationInfo, context: Context): Boolean {
-        return !isSystemApp(context) && !app.isSignedWithPlatformKey && !SettingsLibUtils.isEssentialPackage(
-            context.resources,
-            context.packageManager,
-            app.packageName
-        )
+        // Verificación simple para AndroidTV genérico
+        // Solo verificamos si es app del sistema
+        val isSystemApp = (app.flags and FLAG_SYSTEM) != 0
+        
+        return try {
+            !isSystemApp && !SettingsLibUtils.isEssentialPackage(
+                context.resources,
+                context.packageManager,
+                app.packageName
+            )
+        } catch (e: NoClassDefFoundError) {
+            // SettingsLibUtils no disponible - solo verificamos si es app del sistema
+            !isSystemApp
+        } catch (e: NoSuchMethodError) {
+            // Método no disponible - solo verificamos si es app del sistema
+            !isSystemApp
+        } catch (e: Exception) {
+            // Cualquier otro error - comportamiento seguro por defecto
+            !isSystemApp
+        }
     }
 
     fun isSystemApp(context: Context): Boolean {
