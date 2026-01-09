@@ -121,7 +121,7 @@ class SystemOptionsActivity : ModalActivity(R.layout.activity_system_options),
                         1, // PowerManager.GO_TO_SLEEP_REASON_POWER_BUTTON
                         0
                     )
-                } catch (e: Exception) {
+                } catch (e: ReflectiveOperationException) {
                     Log.e("SystemOptionsActivity", "Failed to invoke goToSleep", e)
                 }
             }
@@ -136,7 +136,7 @@ class SystemOptionsActivity : ModalActivity(R.layout.activity_system_options),
                         val showGlobalActionsMethod = wm.javaClass.getDeclaredMethod("showGlobalActions")
                         showGlobalActionsMethod.invoke(wm)
                     }
-                } catch (e: Exception) {
+                } catch (e: ReflectiveOperationException) {
                     Log.e("SystemOptionsActivity", "Failed to show global actions", e)
                 }
             }

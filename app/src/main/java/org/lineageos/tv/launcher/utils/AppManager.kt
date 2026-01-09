@@ -67,8 +67,11 @@ object AppManager {
                 context.packageManager,
                 app.packageName
             )
-        } catch (e: Exception) {
+        } catch (e: NoClassDefFoundError) {
             // If SettingsLibUtils is not available, fall back to basic check
+            !isSystemApp(context) && !app.isSignedWithPlatformKey
+        } catch (e: NoSuchMethodError) {
+            // If the method is not available, fall back to basic check
             !isSystemApp(context) && !app.isSignedWithPlatformKey
         }
     }
